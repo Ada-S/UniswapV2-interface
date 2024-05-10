@@ -1,7 +1,7 @@
 {
   "name": "@uniswap/interface",
   "description": "Uniswap Interface",
-  "homepage": "https://github.com/Ada-S/UniswapV2-interface",
+  "homepage": "https://ada-s.github.io/UniswapV2-interface",
   "private": true,
   "devDependencies": {
     "@ethersproject/experimental": "^5.0.1",
