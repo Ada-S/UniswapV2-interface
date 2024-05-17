@@ -13,7 +13,7 @@ import multicall from './multicall/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
 
-const store = configureStore({
+const store = configureStore({ // 创建store
   reducer: {
     application,
     user,

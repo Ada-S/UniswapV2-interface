@@ -28,6 +28,7 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
     [chainId, currencies]
   )
 
+  // pair地址
   const pairAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {
@@ -36,6 +37,8 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
     [tokens]
   )
 
+  // 获取pair的储备金
+  // 多合约 同参数
   const results = useMultipleContractSingleData(pairAddresses, PAIR_INTERFACE, 'getReserves')
 
   return useMemo(() => {

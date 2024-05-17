@@ -15,15 +15,15 @@ export interface SwapState {
 }
 
 const initialState: SwapState = {
-  independentField: Field.INPUT,
-  typedValue: '',
+  independentField: Field.INPUT, // 用户希望使用精确的 输入数值 还是 输出数值
+  typedValue: '', // 键入的数值
   [Field.INPUT]: {
     currencyId: ''
   },
   [Field.OUTPUT]: {
     currencyId: ''
   },
-  recipient: null
+  recipient: null // 交易接收者的地址 仅高级模式可设置，默认是用户连接的钱包地址
 }
 
 export default createReducer<SwapState>(initialState, builder =>

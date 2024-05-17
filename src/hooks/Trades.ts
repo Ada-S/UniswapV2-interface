@@ -11,12 +11,14 @@ import { useActiveWeb3React } from './index'
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
   const { chainId } = useActiveWeb3React()
 
+  // 支持的weth、已经可做中间者的token-DAI、USDC、USDT、COMP、MKR
   const bases: Token[] = chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []
 
   const [tokenA, tokenB] = chainId
     ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
     : [undefined, undefined]
 
+  // 由bases两两配对组成的交易对列表
   const basePairs: [Token, Token][] = useMemo(
     () =>
       flatMap(bases, (base): [Token, Token][] => bases.map(otherBase => [base, otherBase])).filter(
@@ -24,6 +26,8 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
       ),
     [bases]
   )
+
+  console.log('basePairs',basePairs, bases)
 
   const allPairCombinations: [Token, Token][] = useMemo(
     () =>
@@ -61,7 +65,10 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
 
   const allPairs = usePairs(allPairCombinations)
 
+  console.log(allPairs,'allPairs')
+
   // only pass along valid pairs, non-duplicated pairs
+  // 返回所有new Pair
   return useMemo(
     () =>
       Object.values(
@@ -80,12 +87,14 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
 
 /**
  * Returns the best trade for the exact amount of tokens in to the given token out
+ * 精准输入
  */
 export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?: Currency): Trade | null {
   const allowedPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut)
   return useMemo(() => {
     if (currencyAmountIn && currencyOut && allowedPairs.length > 0) {
       return (
+        // 数组0返回最优解
         Trade.bestTradeExactIn(allowedPairs, currencyAmountIn, currencyOut, { maxHops: 3, maxNumResults: 1 })[0] ?? null
       )
     }
@@ -95,6 +104,7 @@ export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?:
 
 /**
  * Returns the best trade for the token in to the exact amount of token out
+ * 精准输出
  */
 export function useTradeExactOut(currencyIn?: Currency, currencyAmountOut?: CurrencyAmount): Trade | null {
   const allowedPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency)

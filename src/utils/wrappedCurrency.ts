@@ -4,6 +4,7 @@ export function wrappedCurrency(currency: Currency | undefined, chainId: ChainId
   return chainId && currency === ETHER ? WETH[chainId] : currency instanceof Token ? currency : undefined
 }
 
+// 包裹currency 加上numerator数量、denominator精度
 export function wrappedCurrencyAmount(
   currencyAmount: CurrencyAmount | undefined,
   chainId: ChainId | undefined

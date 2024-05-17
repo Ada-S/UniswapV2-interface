@@ -9,11 +9,16 @@ import { isAddress } from '../utils'
 import { useActiveWeb3React } from './index'
 import { useBytes32TokenContract, useTokenContract } from './useContract'
 
+ // 整合用户自定义添加的token + 默认token
 export function useAllTokens(): { [address: string]: Token } {
   const { chainId } = useActiveWeb3React()
-  const userAddedTokens = useUserAddedTokens()
-  const allTokens = useSelectedTokenList()
+  const userAddedTokens = useUserAddedTokens() // user自定义的tokens
+  const allTokens = useSelectedTokenList() // chainId-> tokenAddress -> token
 
+  console.log('currentMap', allTokens)
+  console.log(userAddedTokens,'userAddedTokens')
+
+  // 整合用户自定义添加的token + 默认token
   return useMemo(() => {
     if (!chainId) return {}
     return (
@@ -61,6 +66,7 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
   const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
   const token: Token | undefined = address ? tokens[address] : undefined
 
+  // 列表没有token，useSingleCallResult进行请求自定义token
   const tokenName = useSingleCallResult(token ? undefined : tokenContract, 'name', undefined, NEVER_RELOAD)
   const tokenNameBytes32 = useSingleCallResult(
     token ? undefined : tokenContractBytes32,

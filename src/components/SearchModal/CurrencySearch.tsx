@@ -1,7 +1,7 @@
 import { Currency, ETHER, Token } from 'sepolia-sdk-adas'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import ReactGA from 'react-ga'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next' // 翻译
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
@@ -43,17 +43,17 @@ export function CurrencySearch({
   onChangeList
 }: CurrencySearchProps) {
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useActiveWeb3React() // useWeb3ReactCore
   const theme = useContext(ThemeContext)
 
   const fixedList = useRef<FixedSizeList>()
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
-  const allTokens = useAllTokens()
+  const [searchQuery, setSearchQuery] = useState<string>('') // 搜寻query
+  const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false) // 正序/倒序
+  const allTokens = useAllTokens() // token地址 -> token
 
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)
-  const searchToken = useToken(searchQuery)
+  const searchToken = useToken(searchQuery) // 返回查询的token
 
   useEffect(() => {
     if (isAddressSearch) {
@@ -65,13 +65,15 @@ export function CurrencySearch({
     }
   }, [isAddressSearch])
 
-  const showETH: boolean = useMemo(() => {
+  const showETH: boolean = useMemo(() => { // token Name列表是否展示eth
     const s = searchQuery.toLowerCase().trim()
     return s === '' || s === 'e' || s === 'et' || s === 'eth'
   }, [searchQuery])
 
   const tokenComparator = useTokenComparator(invertSearchOrder)
 
+  // 如果搜寻的地址是合法的并且是token的地址，展示token的信息
+  // 否则展示token列表
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : []
     return filterTokens(Object.values(allTokens), searchQuery)
@@ -172,13 +174,13 @@ export function CurrencySearch({
       <div style={{ flex: '1' }}>
         <AutoSizer disableWidth>
           {({ height }) => (
-            <CurrencyList
+            <CurrencyList // token name 列表
               height={height}
               showETH={showETH}
               currencies={filteredSortedTokens}
               onCurrencySelect={handleCurrencySelect}
               otherCurrency={otherSelectedCurrency}
-              selectedCurrency={selectedCurrency}
+              selectedCurrency={selectedCurrency} // 选中的token
               fixedListRef={fixedList}
             />
           )}

@@ -31,7 +31,7 @@ type Mutable<T> = { -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer U
 
 const initialState: ListsState = {
   lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS,
-  byUrl: {
+  byUrl: { // token列表-constants/lists
     ...DEFAULT_LIST_OF_LISTS.reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
       memo[listUrl] = NEW_LIST_STATE
       return memo
@@ -43,7 +43,7 @@ const initialState: ListsState = {
       pendingUpdate: null
     }
   },
-  selectedListUrl: undefined
+  selectedListUrl: undefined // tokenList选中的url
 }
 
 export default createReducer(initialState, builder =>

@@ -42,7 +42,7 @@ const EMPTY_LIST: TokenAddressMap = {
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =
   typeof WeakMap !== 'undefined' ? new WeakMap<TokenList, TokenAddressMap>() : null
 
-export function listToTokenMap(list: TokenList): TokenAddressMap {
+export function listToTokenMap(list: TokenList): TokenAddressMap { // 将list转换成map
   const result = listCache?.get(list)
   if (result) return result
 
@@ -55,7 +55,7 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
             return { ...list.tags[tagId], id: tagId }
           })
           ?.filter((x): x is TagInfo => Boolean(x)) ?? []
-      const token = new WrappedTokenInfo(tokenInfo, tags)
+      const token = new WrappedTokenInfo(tokenInfo, tags) // 将tokenInfo转换成WrappedTokenInfo
       if (tokenMap[token.chainId][token.address] !== undefined) throw Error('Duplicate tokens.')
       return {
         ...tokenMap,

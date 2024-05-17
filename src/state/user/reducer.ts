@@ -58,11 +58,12 @@ export const initialState: UserState = {
   userExpertMode: false,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
-  tokens: {},
+  tokens: {}, // 用户的所有tokens
   pairs: {},
   timestamp: currentTimestamp()
 }
 
+ // addCase 添加action
 export default createReducer(initialState, builder =>
   builder
     .addCase(updateVersion, state => {

@@ -78,6 +78,8 @@ export default function Swap() {
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
+  // 重点逻辑
+  // v1Trade: Trade<Token, Token, TradeType> | undefined
   const {
     v1Trade,
     v2Trade,
@@ -86,6 +88,9 @@ export default function Swap() {
     currencies,
     inputError: swapInputError
   } = useDerivedSwapInfo()
+
+  // 向router合约发起交易，返回交易的 状态，回调，报错
+  // eth -> weth 或者 weth -> eth 的转换
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
@@ -117,12 +122,13 @@ export default function Swap() {
         [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
         [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
       }
-
+  // onCurrencySelection 更改输入、输出的currencyId
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   const isValid = !swapInputError
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
-  const handleTypeInput = useCallback(
+  // 用户输入 更改typedValue、independentField
+  const handleTypeInput = useCallback( 
     (value: string) => {
       onUserInput(Field.INPUT, value)
     },
@@ -387,7 +393,7 @@ export default function Swap() {
                 {wrapInputError ??
                   (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
               </ButtonPrimary>
-            ) : noRoute && userHasSpecifiedInputOutput ? (
+            ) : noRoute && userHasSpecifiedInputOutput ? ( // 没有这个流动性
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
               </GreyCard>

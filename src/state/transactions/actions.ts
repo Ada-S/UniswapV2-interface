@@ -12,6 +12,7 @@ export interface SerializableTransactionReceipt {
   status?: number
 }
 
+// 添加
 export const addTransaction = createAction<{
   chainId: ChainId
   hash: string
@@ -19,12 +20,15 @@ export const addTransaction = createAction<{
   approval?: { tokenAddress: string; spender: string }
   summary?: string
 }>('transactions/addTransaction')
+// 
 export const clearAllTransactions = createAction<{ chainId: ChainId }>('transactions/clearAllTransactions')
+// 确认交易
 export const finalizeTransaction = createAction<{
   chainId: ChainId
   hash: string
   receipt: SerializableTransactionReceipt
 }>('transactions/finalizeTransaction')
+// 监听交易结果
 export const checkedTransaction = createAction<{
   chainId: ChainId
   hash: string

@@ -20,7 +20,7 @@ export interface ApplicationState {
 const initialState: ApplicationState = {
   blockNumber: {},
   popupList: [],
-  walletModalOpen: false,
+  walletModalOpen: false, // wallet弹窗的展示flag
   settingsMenuOpen: false
 }
 

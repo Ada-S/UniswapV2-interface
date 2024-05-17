@@ -117,7 +117,7 @@ export function useDerivedSwapInfo(): {
 } {
   const { account } = useActiveWeb3React()
 
-  const toggledVersion = useToggledVersion()
+  const toggledVersion = useToggledVersion() // 版本
 
   const {
     independentField,
@@ -127,11 +127,14 @@ export function useDerivedSwapInfo(): {
     recipient
   } = useSwapState()
 
+  // sdk的new Token包装
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
-  const recipientLookup = useENS(recipient ?? undefined)
-  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
+  const recipientLookup = useENS(recipient ?? undefined)
+  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null // 没有开启userExpertMode，默认为wallet地址
+
+  // 余额
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined
@@ -140,11 +143,15 @@ export function useDerivedSwapInfo(): {
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
+  console.log(parsedAmount,'parsedAmount!!', typedValue)
+
+  // 最好的trade 当parsedAmount 修改就会重新计算
   const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
   const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 
+  // 余额
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
     [Field.OUTPUT]: relevantTokenBalances[1]
@@ -184,14 +191,18 @@ export function useDerivedSwapInfo(): {
     }
   }
 
+
+  // 滑点
   const [allowedSlippage] = useUserSlippageTolerance()
 
+  // 计算考虑滑点的情况下的输入 v2
   const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
 
   const slippageAdjustedAmountsV1 =
     v1Trade && allowedSlippage && computeSlippageAdjustedAmounts(v1Trade, allowedSlippage)
 
   // compare input balance to max input based on version
+  // 比较用户的token余额与计算滑点后的输入数量
   const [balanceIn, amountIn] = [
     currencyBalances[Field.INPUT],
     toggledVersion === Version.v1

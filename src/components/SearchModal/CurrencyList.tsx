@@ -94,14 +94,15 @@ function CurrencyRow({
   style: CSSProperties
 }) {
   const { account, chainId } = useActiveWeb3React()
-  const key = currencyKey(currency)
-  const selectedTokenList = useSelectedTokenList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
-  const customAdded = useIsUserAddedToken(currency)
+  const key = currencyKey(currency) // token 地址
+  const selectedTokenList = useSelectedTokenList() 
+  const isOnSelectedList = isTokenOnList(selectedTokenList, currency) // 是否 不是自定义token
+  const customAdded = useIsUserAddedToken(currency) // 当前currency是否在用户自定义的token列表内
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
+  // 用户添加/删除 token
   const removeToken = useRemoveUserAddedToken()
-  const addToken = useAddUserToken()
+  const addToken = useAddUserToken() 
 
   // only show add or remove buttons if not on selected list
   return (
@@ -154,7 +155,7 @@ function CurrencyRow({
   )
 }
 
-export default function CurrencyList({
+export default function CurrencyList({ // token name下的list
   height,
   currencies,
   selectedCurrency,

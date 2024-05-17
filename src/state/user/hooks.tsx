@@ -112,7 +112,7 @@ export function useUserDeadline(): [number, (slippage: number) => void] {
   return [userDeadline, setUserDeadline]
 }
 
-export function useAddUserToken(): (token: Token) => void {
+export function useAddUserToken(): (token: Token) => void { // 用户添加token
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (token: Token) => {
@@ -132,7 +132,7 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
   )
 }
 
-export function useUserAddedTokens(): Token[] {
+export function useUserAddedTokens(): Token[] { // 返回用户添加的自定义token列表
   const { chainId } = useActiveWeb3React()
   const serializedTokensMap = useSelector<AppState, AppState['user']['tokens']>(({ user: { tokens } }) => tokens)
 

@@ -58,20 +58,22 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
     () =>
       JSON.stringify(
         calls
-          ?.filter((c): c is Call => Boolean(c))
-          ?.map(toCallKey)
-          ?.sort() ?? []
+          ?.filter((c): c is Call => Boolean(c)) // 删除不是Call数据结构的
+          ?.map(toCallKey) // 用-拼接 address 和 callData
+          ?.sort() ?? [] // 排序
       ),
     [calls]
   )
+
+  console.log(calls,'calls',serializedCallKeys)
 
   // update listeners when there is an actual change that persists for at least 100ms
   useEffect(() => {
     const callKeys: string[] = JSON.parse(serializedCallKeys)
     if (!chainId || callKeys.length === 0) return undefined
-    const calls = callKeys.map(key => parseCallKey(key))
+    const calls = callKeys.map(key => parseCallKey(key)) // 解析出 address 和 callData
     dispatch(
-      addMulticallListeners({
+      addMulticallListeners({ // 更新callListeners
         chainId,
         calls,
         options
@@ -99,6 +101,7 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
         if (result?.data && result?.data !== '0x') {
           data = result.data
         }
+        console.log(result,'result',data,'🍌')
 
         return { valid: true, data, blockNumber: result?.blockNumber }
       }),
@@ -228,6 +231,7 @@ export function useMultipleContractSingleData(
   }, [fragment, results, contractInterface, latestBlockNumber])
 }
 
+ // 调用一个合约的单次请求
 export function useSingleCallResult(
   contract: Contract | null | undefined,
   methodName: string,
@@ -236,6 +240,8 @@ export function useSingleCallResult(
 ): CallState {
   const fragment = useMemo(() => contract?.interface?.getFunction(methodName), [contract, methodName])
 
+  
+  // 生成请求的数组
   const calls = useMemo<Call[]>(() => {
     return contract && fragment && isValidMethodArgs(inputs)
       ? [
@@ -248,8 +254,9 @@ export function useSingleCallResult(
   }, [contract, fragment, inputs])
 
   const result = useCallsData(calls, options)[0]
-  const latestBlockNumber = useBlockNumber()
+  const latestBlockNumber = useBlockNumber() // 获取blockNumber
 
+  console.log('fragment',fragment,'result',result,'latestBlockNumber',latestBlockNumber)
   return useMemo(() => {
     return toCallState(result, contract?.interface, fragment, latestBlockNumber)
   }, [result, contract, fragment, latestBlockNumber])
